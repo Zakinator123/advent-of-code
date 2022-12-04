@@ -9,21 +9,22 @@ public class Day01 implements DaySolver {
 
     @Override
     public String solvePuzzle1(List<String> input) {
-        List<Integer> elvesWithHighestCalories = getNElvesWithCalories(input, 1);
+        List<Integer> elvesWithHighestCalories = getKGreatestCaloriesAmounts(input, 1);
         return String.valueOf(elvesWithHighestCalories.get(0));
     }
 
     @Override
     public String solvePuzzle2(List<String> input) {
-        List<Integer> nElvesWithCalories = getNElvesWithCalories(input, 2);
+        List<Integer> nElvesWithCalories = getKGreatestCaloriesAmounts(input, 2);
         return String.valueOf(nElvesWithCalories.stream().mapToInt(Integer::intValue).sum());
     }
-    private List<Integer> getNElvesWithCalories(List<String> input, int n) {
+
+    private List<Integer> getKGreatestCaloriesAmounts(List<String> input, int k) {
         PriorityQueue<Integer> minHeap = new PriorityQueue<>();
         int currentCaloriesForElf = 0;
         for (String s : input) {
             if (s.isBlank()) {
-                if (minHeap.size() < n) minHeap.add(currentCaloriesForElf);
+                if (minHeap.size() < k) minHeap.add(currentCaloriesForElf);
                 else if (Objects.requireNonNull(minHeap.peek()) < currentCaloriesForElf) {
                     minHeap.poll();
                     minHeap.add(currentCaloriesForElf);
