@@ -1,4 +1,5 @@
 import aoc.Day01;
+import aoc.Day02;
 import aoc.DaySolver;
 
 import java.io.BufferedReader;
@@ -11,7 +12,9 @@ import static java.lang.String.format;
 
 public class Main {
 
-    private static final Map<String, DaySolver> daySolverMap = Map.of("01", new Day01());
+    private static final Map<String, DaySolver> daySolverMap = Map.of(
+            "01", new Day01(),
+            "02", new Day02());
 
     public static void main(String[] args) {
 
