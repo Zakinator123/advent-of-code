@@ -14,7 +14,8 @@ public class Main {
             "01", new Day01(),
             "02", new Day02(),
             "03", new Day03(),
-            "04", new Day04());
+            "04", new Day04(),
+            "05", new Day05());
 
     public static void main(String[] args) {
 
