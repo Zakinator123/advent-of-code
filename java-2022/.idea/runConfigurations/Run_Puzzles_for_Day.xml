@@ -2,7 +2,7 @@
   <configuration default="false" name="Run Puzzles for Day" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="Main" />
     <module name="java-2022" />
-    <option name="PROGRAM_PARAMETERS" value="05" />
+    <option name="PROGRAM_PARAMETERS" value="06" />
     <extension name="software.aws.toolkits.jetbrains.core.execution.JavaAwsConnectionExtension">
       <option name="credential" />
       <option name="region" />
