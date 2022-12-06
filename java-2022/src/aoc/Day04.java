@@ -2,6 +2,7 @@ package aoc;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class Day04 implements DaySolver {
 
     record Range(int beginRange, int endRange) {};

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.PriorityQueue;
 
+@SuppressWarnings("unused")
 public class Day01 implements DaySolver {
 
     @Override

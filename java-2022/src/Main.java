@@ -1,37 +1,26 @@
-import aoc.*;
+import aoc.DaySolver;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 import static java.lang.String.format;
+import static java.util.Objects.requireNonNull;
 
 public class Main {
 
-    private static final Map<String, DaySolver> daySolverMap = Map.of(
-            "01", new Day01(),
-            "02", new Day02(),
-            "03", new Day03(),
-            "04", new Day04(),
-            "05", new Day05());
-
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws Exception {
         if (args.length == 0) throw new RuntimeException("A 'day' CLI argument must be provided to the application.");
-        var day = args[0];
+        final String dayNumber = args[0];
 
-        var inputStream = ClassLoader.getSystemResourceAsStream(format("resources/day%s.txt", day));
-        if (inputStream == null) throw new RuntimeException("Could not read in resource file.");
+        Class<?> clazz = Class.forName(format("aoc.Day%s", dayNumber));
+        DaySolver daySolver = (DaySolver) clazz.getDeclaredConstructor().newInstance();
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-            var input = reader.lines().collect(Collectors.toList());
+        Path pathToInputFile = Paths.get(requireNonNull(Main.class.getResource(format("resources/day%s.txt", dayNumber))).toURI());
+        List<String> input = Files.readAllLines(pathToInputFile);
 
-            System.out.println(daySolverMap.get(day).solvePuzzle1(input));
-            System.out.println(daySolverMap.get(day).solvePuzzle2(input));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        System.out.println(daySolver.solvePuzzle1(input));
+        System.out.println(daySolver.solvePuzzle2(input));
     }
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import static aoc.Day02.GameResult.*;
 import static aoc.Day02.RPSHand.*;
 
+@SuppressWarnings("unused")
 public class Day02 implements DaySolver {
 
     enum RPSHand {

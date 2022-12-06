@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@SuppressWarnings("unused")
 public class Day03 implements DaySolver {
     @Override
     public String solvePuzzle1(List<String> input) {

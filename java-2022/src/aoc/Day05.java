@@ -3,8 +3,8 @@ package aoc;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 public class Day05 implements DaySolver {
-
     record PuzzleData (List<List<Integer>> modifications, Map<Integer, Deque<Character>> stacks) {}
 
     @Override
@@ -32,17 +32,16 @@ public class Day05 implements DaySolver {
 
         List<List<Integer>> parsedModifications = parseModifications(input.subList(modificationInputStart, input.size()));
         Map<Integer, Deque<Character>> stacks = getStacksFromInput(initialStacksConfiguration);
-        PuzzleData puzzleData = new PuzzleData(parsedModifications, stacks);
-        return puzzleData;
+        return new PuzzleData(parsedModifications, stacks);
     }
 
     private List<List<Integer>> parseModifications(List<String> unParsedModifications) {
         return unParsedModifications.stream()
-                .map(modification -> modification.replace("move ", ""))
-                .map(modification -> modification.replace(" from ", ","))
-                .map(modification -> modification.replace(" to ", ","))
-                .map(modificationString -> Arrays.asList(modificationString.split(",")))
-                .map(modificationCharList -> modificationCharList.stream().map(string -> Integer.parseInt(string)).toList())
+                .map(unParsedModification ->
+                        unParsedModification.replace("move ", "")
+                                            .replace(" from ", ",")
+                                            .replace(" to ", ","))
+                .map(s -> Arrays.stream(s.split(",")).map(Integer::parseInt).toList())
                 .toList();
     }
 
@@ -57,7 +56,7 @@ public class Day05 implements DaySolver {
 
     private void modifyStacksV2(PuzzleData puzzleData) {
         for (List<Integer> modification : puzzleData.modifications) {
-            Deque<Character> characterStack = new ArrayDeque<Character>();
+            Deque<Character> characterStack = new ArrayDeque<>();
             for (int i = 0; i < modification.get(0); i++) {
                 Character poppedStackElement = puzzleData.stacks.get(modification.get(1)).pop();
                 characterStack.push(poppedStackElement);
