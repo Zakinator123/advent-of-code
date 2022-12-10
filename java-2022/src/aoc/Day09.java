@@ -11,39 +11,23 @@ public class Day09 implements DaySolver {
     record Coordinate(int x, int y) {}
     record Maneuver(int x, int y) {}
     record MoveAction(Character direction, int number) {}
-    private final Coordinate startingCoordinate = new Coordinate(20, 20);
+    private final Coordinate startingCoordinate = new Coordinate(0, 0);
 
-    private Maneuver getManeuver(Coordinate prevKnotRelativePosition) {
+    private Maneuver getManeuverToFixSnake(Coordinate prevKnotRelativePosition) {
         int x = prevKnotRelativePosition.x;
         int y = prevKnotRelativePosition.y;
 
-        // TL
-        if (x == -1 && y ==2 || x == -2 && y == 1 || x == -2 && y == 2)
-            return new Maneuver(-1, 1);
-        // L
-        if (x == -2 && y == 0)
-            return new Maneuver(-1, 0);
-        //BL
-        if (x == -2 && y == -1 || x == -1 && y == -2 || x == -2 && y == -2)
-            return new Maneuver(-1, -1);
-        // B
-        if (x == 0 && y == -2)
-            return new Maneuver(0, -1);
-        // BR
-        if (x == 1 && y == -2 || x == 2 && y == -1 || x == 2 && y == -2)
-            return new Maneuver(1, -1);
-        // R
-        if (x == 2 && y == 0)
-            return new Maneuver(1, 0);
-        // TR
-        if (x == 2 && y == 1 || x == 1 && y == 2 || x == 2 && y == 2)
-            return new Maneuver(1, 1);
-        // T
-        if (x == 0 && y == 2)
-            return new Maneuver(0,1);
-
+        if (x == -1 && y ==2 || x == -2 && y == 1 || x == -2 && y == 2) return new Maneuver(-1, 1);      // TL
+        if (x == -2 && y == 0) return new Maneuver(-1, 0);                                               // L
+        if (x == -2 && y == -1 || x == -1 && y == -2 || x == -2 && y == -2) return new Maneuver(-1, -1); // BL
+        if (x == 0 && y == -2) return new Maneuver(0, -1);                                               // B
+        if (x == 1 && y == -2 || x == 2 && y == -1 || x == 2 && y == -2) return new Maneuver(1, -1);     // BR
+        if (x == 2 && y == 0) return new Maneuver(1, 0);                                                 // R
+        if (x == 2 && y == 1 || x == 1 && y == 2 || x == 2 && y == 2) return new Maneuver(1, 1);         // TR
+        if (x == 0 && y == 2) return new Maneuver(0,1);                                                  // T
         throw new RuntimeException();
     }
+
     @Data
     static class Knot {
         private Coordinate currCoordinate;
@@ -84,19 +68,16 @@ public class Day09 implements DaySolver {
             currentKnot.isHead = false;
             i++;
         }
-
         return head;
     }
 
     private Set<Coordinate> executeMovesAndGetVisitedTailCoordinates(List<MoveAction> moveActions, Knot head) {
-        var visitedTailCoordinates = new HashSet<Coordinate>();
-        visitedTailCoordinates.add(startingCoordinate);
-
+        HashSet<Coordinate> visitedTailCoordinates = new HashSet<>(List.of(startingCoordinate));
         for (var moveAction : moveActions) {
             for (int i = 0; i < moveAction.number; i++) {
                 var currKnot = head;
                 var prevKnot = head;
-                do {
+                while (currKnot != null) {
                     if (currKnot.isHead()) {
                         setNewCoordinateSimpleDirectionChange(currKnot, moveAction.direction);
                         currKnot = currKnot.nextKnot;
@@ -107,20 +88,17 @@ public class Day09 implements DaySolver {
                             prevKnot.currCoordinate.x - currKnot.currCoordinate.x,
                             prevKnot.currCoordinate.y - currKnot.currCoordinate.y);
 
-                    applyManeuver(currKnot, getManeuver(relativePositionDifference));
+                    Maneuver maneuver = getManeuverToFixSnake(relativePositionDifference);
+                    currKnot.setCurrCoordinate(new Coordinate(currKnot.getCurrCoordinate().x + maneuver.x, currKnot.getCurrCoordinate().y + maneuver.y));
 
                     if (currKnot.isTail()) visitedTailCoordinates.add(currKnot.currCoordinate);
+
                     prevKnot = currKnot;
                     currKnot = currKnot.nextKnot;
-                } while (!prevKnot.isTail());
+                }
             }
         }
         return visitedTailCoordinates;
-    }
-
-    private void applyManeuver(Knot currKnot, Maneuver maneuver) {
-        Coordinate newCoord = new Coordinate(currKnot.getCurrCoordinate().x + maneuver.x, currKnot.getCurrCoordinate().y + maneuver.y);
-        currKnot.setCurrCoordinate(newCoord);
     }
 
     private boolean currKnotTouchingPrevKnot(Knot prevKnot, Knot currKnot) {
@@ -131,22 +109,18 @@ public class Day09 implements DaySolver {
 
     private void setNewCoordinateSimpleDirectionChange(Knot knot, Character direction) {
         Coordinate currCoordinate = knot.getCurrCoordinate();
-        Coordinate newCoord = switch (direction) {
+        knot.setCurrCoordinate(switch (direction) {
             case 'U' -> new Coordinate(currCoordinate.x, currCoordinate.y+1);
             case 'D' -> new Coordinate(currCoordinate.x, currCoordinate.y-1);
             case 'R' -> new Coordinate(currCoordinate.x+1, currCoordinate.y);
             case 'L' -> new Coordinate(currCoordinate.x-1, currCoordinate.y);
-            default -> throw new RuntimeException();
-        };
-        knot.setCurrCoordinate(newCoord);
+            default -> throw new RuntimeException();});
     }
 
     private List<MoveAction> parseMoveActions(List<String> input) {
-        return input.stream()
-                .map(inputLine -> {
+        return input.stream().map(inputLine -> {
                     String[] inputStrings = inputLine.split(" ");
                     return new MoveAction(inputStrings[0].charAt(0), Integer.parseInt(inputStrings[1]));
-                })
-                .toList();
+                }).toList();
     }
 }
