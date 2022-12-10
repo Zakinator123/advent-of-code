@@ -9,7 +9,6 @@ import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;
 
 public class Main {
-
     public static void main(String[] args) throws Exception {
         final String dayNumber = args[0];
 
