@@ -11,7 +11,6 @@ import static java.util.Objects.requireNonNull;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        if (args.length == 0) throw new RuntimeException("A 'day' CLI argument must be provided to the application.");
         final String dayNumber = args[0];
 
         Class<?> clazz = Class.forName(format("aoc.Day%s", dayNumber));
