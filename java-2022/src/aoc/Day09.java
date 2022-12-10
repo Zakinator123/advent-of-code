@@ -2,14 +2,9 @@ package aoc;
 
 import lombok.Data;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings("unused")
 public class Day09 implements DaySolver {
@@ -54,7 +49,6 @@ public class Day09 implements DaySolver {
         private Coordinate currCoordinate;
         private Knot nextKnot;
         private boolean isHead = false;
-        char symbol;
         public boolean isTail() {
             return nextKnot == null;
         }
@@ -84,7 +78,6 @@ public class Day09 implements DaySolver {
         int i = 0;
         while (i < snakeSize) {
             currentKnot.currCoordinate = startingCoordinate;
-            currentKnot.symbol = currentKnot.isHead ? 'H' : Character.forDigit(i, 10);
             if (i == snakeSize - 1) break;
             currentKnot.nextKnot = new Knot();
             currentKnot = currentKnot.nextKnot;
@@ -93,28 +86,6 @@ public class Day09 implements DaySolver {
         }
 
         return head;
-    }
-
-    public void printSnake(Knot head) throws Exception {
-        int sizeOfGrid = 40;
-        char[][] grid = new char[sizeOfGrid][sizeOfGrid];
-        Knot currKnot = head;
-
-        while (currKnot != null) {
-            grid[sizeOfGrid - currKnot.getCurrCoordinate().y - 1][currKnot.getCurrCoordinate().x] = currKnot.symbol;
-            currKnot = currKnot.nextKnot;
-        }
-
-        Path path = Paths.get(requireNonNull(this.getClass().getResource("../resources/snake.txt")).toURI());
-        for (int i = 0; i < sizeOfGrid; i++) {
-            char[] chars = grid[i];
-            for (int j = 0; j < chars.length; j++) {
-                char c = chars[j];
-                if (c == 0) grid[i][j] = '.';
-            }
-            Files.writeString(path, new String(chars));
-            Files.writeString(path, "\n");
-        }
     }
 
     private Set<Coordinate> executeMovesAndGetVisitedTailCoordinates(List<MoveAction> moveActions, Knot head) {
@@ -142,13 +113,6 @@ public class Day09 implements DaySolver {
                     prevKnot = currKnot;
                     currKnot = currKnot.nextKnot;
                 } while (!prevKnot.isTail());
-
-                try {
-                    printSnake(head);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-
             }
         }
         return visitedTailCoordinates;
