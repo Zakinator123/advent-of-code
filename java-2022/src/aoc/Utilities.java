@@ -1,6 +1,7 @@
 package aoc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Utilities {
@@ -17,5 +18,11 @@ public class Utilities {
             } else currentList.add(line);
         }
         return parsedInput;
+    }
+
+    public static int[][] copy2dIntArray(int[][] arrayToCopy) {
+        return Arrays.stream(arrayToCopy)
+                .map(int[]::clone)
+                .toArray(int[][]::new);
     }
 }
